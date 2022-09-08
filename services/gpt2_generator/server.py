@@ -39,9 +39,9 @@ try:
     model = GPT2LMHeadModel.from_pretrained(PRETRAINED_MODEL_NAME_OR_PATH)
     if torch.cuda.is_available():
         model.to("cuda")
-        logger.info("gpt2-generator is set to run on cuda")
+        logger.info("gpt2_generator is set to run on cuda")
 
-    logger.info("gpt2-generator is ready")
+    logger.info("gpt2_generator is ready")
 except Exception as e:
     sentry_sdk.capture_exception(e)
     logger.exception(e)
@@ -107,7 +107,7 @@ def respond():
         confidences = [[ZERO_CONFIDENCE]] * len(contexts)
 
     total_time = time.time() - st_time
-    logger.info(f"gpt2-generator exec time: {total_time:.3f}s")
+    logger.info(f"gpt2_generator exec time: {total_time:.3f}s")
     logger.info(responses)
     logger.info(confidences)
     return jsonify(list(zip(responses, confidences)))
