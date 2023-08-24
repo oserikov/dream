@@ -25,7 +25,7 @@
                             "factoid": 0.9995546936988831,
                             "conversational": 0.0004453235014807433
                         },
-                        "conceptnet": {
+                        "comet_conceptnet": {
                             "mockcity": {
                                 "Causes": [
                                     "death",
@@ -524,6 +524,9 @@
     ],
     "disliked_skills_batch": [
         []
+    ],
+    "prompts_goals_batch": [
+        {}
     ],
     "clarification_request_flag_batch": [
         false

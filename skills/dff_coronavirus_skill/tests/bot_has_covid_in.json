@@ -51,7 +51,7 @@
                                 "toxic": 0.0011847615242004395
                             }
                         },
-                        "conceptnet": {
+                        "comet_conceptnet": {
                             "1 very specific question": {
                                 "Causes": [
                                     "answer",
@@ -335,6 +335,9 @@
     ],
     "disliked_skills_batch": [
         []
+    ],
+    "prompts_goals_batch": [
+        {}
     ],
     "clarification_request_flag_batch": [
         false

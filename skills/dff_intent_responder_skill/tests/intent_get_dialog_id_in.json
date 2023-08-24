@@ -162,7 +162,7 @@
                             }
                         ],
                         "entity_linking": [],
-                        "conceptnet": {},
+                        "comet_conceptnet": {},
                         "sentrewrite": {
                             "clusters": [],
                             "modified_sents": [
@@ -374,7 +374,7 @@
                             }
                         ],
                         "entity_linking": [],
-                        "conceptnet": {},
+                        "comet_conceptnet": {},
                         "sentrewrite": {
                             "clusters": [],
                             "modified_sents": [
@@ -563,6 +563,9 @@
     ],
     "disliked_skills_batch": [
         []
+    ],
+    "prompts_goals_batch": [
+        {}
     ],
     "clarification_request_flag_batch": [
         false

@@ -269,7 +269,7 @@
                             "utt_num": 4,
                             "wiki_skill_entities_info": {}
                         },
-                        "conceptnet": {
+                        "comet_conceptnet": {
                             "fun": {
                                 "SymbolOf": [
                                     "life",
@@ -595,7 +595,7 @@
                             "utt_num": 5,
                             "wiki_skill_entities_info": {}
                         },
-                        "conceptnet": {
+                        "comet_conceptnet": {
                             "animal farm": {
                                 "SymbolOf": [
                                     "farm life",
@@ -778,6 +778,9 @@
     ],
     "disliked_skills_batch": [
         []
+    ],
+    "prompts_goals_batch": [
+        {}
     ],
     "clarification_request_flag_batch": [
         false

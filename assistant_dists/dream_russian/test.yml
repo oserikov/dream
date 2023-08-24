@@ -7,47 +7,64 @@ services:
   mongo:
     command: mongod
     image: mongo:4.0.0
-    # # you can use persistent local volume if you need
-    # volumes:
-    #   - ./venv/data/db_data:/root/data/db
-  dff-program-y-skill:
-  convers-evaluation-selector:
-  dff-intent-responder-skill:
-  dff-generative-skill:
-  intent-catcher:
-    environment:
-      - CUDA_VISIBLE_DEVICES=8
-  badlisted-words:
-  toxic-classification:
-    environment:
-      - CUDA_VISIBLE_DEVICES=7
-  ner:
+  dff-program-y-ru-skill:
+  convers-evaluation-selector-ru:
+  dff-intent-responder-ru-skill:
+  dff-generative-ru-skill:
+  intent-catcher-ru:
     volumes:
       - "~/.deeppavlov:/root/.deeppavlov"
     environment:
       - CUDA_VISIBLE_DEVICES=8
-  personal-info-skill:
-  entity-linking:
+  badlisted-words-ru:
+  toxic-classification-ru:
+    volumes:
+      - "~/.deeppavlov/cache:/root/.cache"
+    environment:
+      - CUDA_VISIBLE_DEVICES=7
+  ner-ru:
     volumes:
       - "~/.deeppavlov:/root/.deeppavlov"
-  wiki-parser:
+    environment:
+      - CUDA_VISIBLE_DEVICES=8
+  personal-info-ru-skill:
+  entity-linking-ru:
     volumes:
       - "~/.deeppavlov:/root/.deeppavlov"
-  spelling-preprocessing:
-  dff-friendship-skill:
-  entity-detection:
+  wiki-parser-ru:
     volumes:
       - "~/.deeppavlov:/root/.deeppavlov"
-  sentseg:
+  spelling-preprocessing-ru:
+    volumes:
+      - "~/.deeppavlov:/root/.deeppavlov"
+  dff-friendship-ru-skill:
+  entity-detection-ru:
+    volumes:
+      - "~/.deeppavlov:/root/.deeppavlov"
+  sentseg-ru:
     volumes:
       - "~/.deeppavlov:/root/.deeppavlov"
     environment:
       - CUDA_VISIBLE_DEVICES=7
-  dialogpt:
+  dialogpt-ru:
+    volumes:
+      - "~/.deeppavlov/cache:/root/.cache"
     environment:
       - CUDA_VISIBLE_DEVICES=6
-  dialogrpt:
+  dialogrpt-ru:
+    volumes:
+      - "~/.deeppavlov/cache:/root/.cache"
     environment:
       - CUDA_VISIBLE_DEVICES=6
   dff-template-skill:
+  fact-retrieval-ru:
+    volumes:
+      - "~/.deeppavlov:/root/.deeppavlov"
+    environment:
+      - CUDA_VISIBLE_DEVICES=5
+  text-qa-ru:
+    volumes:
+      - "~/.deeppavlov:/root/.deeppavlov"
+    environment:
+      - CUDA_VISIBLE_DEVICES=5
 version: '3.7'

@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import logging
-
-# import pprint
+import json
 import random
-
 import re
 import time
 from collections import Counter
@@ -15,7 +13,7 @@ from flask import Flask, request, jsonify
 from nltk.tokenize import sent_tokenize
 
 from common.greeting import greeting_spec, HI_THIS_IS_DREAM
-from common.universal_templates import if_chat_about_particular_topic, if_choose_topic, DUMMY_DONTKNOW_RESPONSES
+from common.universal_templates import if_chat_about_particular_topic, if_choose_topic
 from common.utils import (
     get_intent_name,
     low_priority_intents,
@@ -46,13 +44,10 @@ app = Flask(__name__)
 
 CALL_BY_NAME_PROBABILITY = float(getenv("CALL_BY_NAME_PROBABILITY", 0.5))  # if name is already known
 TAG_BASED_SELECTION = getenv("TAG_BASED_SELECTION", False)
-MOST_DUMMY_RESPONSES = [
-    "I really do not know what to answer.",
-    "Sorry, probably, I didn't get what you mean.",
-    "I didn't get it. Sorry",
-]
 LANGUAGE = getenv("LANGUAGE", "EN")
 GREETING_FIRST = int(getenv("GREETING_FIRST", 1))
+FALLBACK_FILE = getenv("FALLBACK_FILE", "fallbacks_dream_en.json")
+DUMMY_DONTKNOW_RESPONSES = json.load(open(f"common/fallbacks/{FALLBACK_FILE}", "r"))
 
 
 @app.route("/respond", methods=["POST"])
@@ -68,6 +63,7 @@ def respond():
     selected_confidences = []
     selected_human_attributes = []
     selected_bot_attributes = []
+    selected_attributes = []
 
     for i, (dialog, all_prev_active_skills) in enumerate(zip(dialogs_batch, all_prev_active_skills_batch)):
         curr_confidences = []
@@ -112,7 +108,7 @@ def respond():
             curr_scores = np.array(curr_scores)
             curr_confidences = np.array(curr_confidences)
             # now we collected all current candidates and their annotations. select response among them
-            best_skill_name, best_text, best_confidence, best_human_attributes, best_bot_attributes = select_response(
+            best_skill_name, best_text, best_confidence, best_human_attrs, best_bot_attrs, best_attrs = select_response(
                 curr_candidates,
                 curr_scores,
                 curr_confidences,
@@ -129,30 +125,34 @@ def respond():
             else:
                 logger.info("Response Selector Error: randomly choosing response among dummy responses.")
                 best_cand = {
-                    "text": random.choice(DUMMY_DONTKNOW_RESPONSES[LANGUAGE]),
+                    "text": random.choice(DUMMY_DONTKNOW_RESPONSES),
                     "confidence": 0.1,
                     "human_attributes": {},
                     "bot_attributes": {},
                     "skill_name": "dummy_skill",
                     "active_skill": "dummy_skill",
                 }
-            best_skill_name = best_cand["skill_name"]
-            best_text = best_cand["text"]
-            best_confidence = best_cand["confidence"]
-            best_human_attributes = best_cand.get("human_attributes", {})
-            best_bot_attributes = best_cand.get("bot_attributes", {})
+            best_skill_name = best_cand.pop("skill_name")
+            best_text = best_cand.pop("text")
+            best_confidence = best_cand.pop("confidence")
+            best_human_attrs = best_cand.pop("human_attributes", {})
+            best_bot_attrs = best_cand.pop("bot_attributes", {})
+            best_cand.pop("annotations", {})
+            best_attrs = best_cand
 
         selected_skill_names.append(best_skill_name)
         selected_texts.append(best_text)
         selected_confidences.append(best_confidence)
-        selected_human_attributes.append(best_human_attributes)
-        selected_bot_attributes.append(best_bot_attributes)
+        selected_human_attributes.append(best_human_attrs)
+        selected_bot_attributes.append(best_bot_attrs)
+        selected_attributes.append(best_attrs)
 
     logger.info(
         f"Choose selected_skill_names: {selected_skill_names};"
         f"selected_texts {selected_texts}; selected_confidences {selected_confidences};"
         f"selected human attributes: {selected_human_attributes}; "
-        f"selected bot attributes: {selected_bot_attributes}"
+        f"selected bot attributes: {selected_bot_attributes}; "
+        f"selected attributes: {selected_attributes}"
     )
 
     total_time = time.time() - st_time
@@ -165,6 +165,7 @@ def respond():
                 selected_confidences,
                 selected_human_attributes,
                 selected_bot_attributes,
+                selected_attributes,
             )
         )
     )
@@ -350,7 +351,7 @@ def select_response(candidates, scores, confidences, is_toxics, dialog, all_prev
     n_toxic_candidates, scores, confidences = downscore_toxic_badlisted_responses(scores, confidences, is_toxics)
     if n_toxic_candidates == len(candidates):
         # the most dummy заглушка на случай, когда все абсолютно скиллы вернули токсичные ответы
-        return None, np.random.choice(DUMMY_DONTKNOW_RESPONSES[LANGUAGE]), 1.0, {}, {}
+        return None, np.random.choice(DUMMY_DONTKNOW_RESPONSES), 1.0, {}, {}
 
     # REPEAT checks
     bot_utterances = [sent_tokenize(uttr["text"].lower()) for uttr in dialog["bot_utterances"]]
@@ -409,7 +410,15 @@ def select_response(candidates, scores, confidences, is_toxics, dialog, all_prev
     if dialog["human_utterances"][-1]["text"] == "/get_dialog_id":
         best_text = "Your dialog's id: " + str(dialog["dialog_id"])
 
-    return best_skill_name, best_text, best_confidence, best_human_attributes, best_bot_attributes
+    candidates[best_id].pop("skill_name")
+    candidates[best_id].pop("text")
+    candidates[best_id].pop("confidence")
+    candidates[best_id].pop("human_attributes", {})
+    candidates[best_id].pop("bot_attributes", {})
+    candidates[best_id].pop("annotations", {})
+    best_attrs = candidates[best_id]
+
+    return best_skill_name, best_text, best_confidence, best_human_attributes, best_bot_attributes, best_attrs
 
 
 if __name__ == "__main__":

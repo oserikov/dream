@@ -188,7 +188,7 @@
                             "dff_sport_skill",
                             "book_skill"
                         ],
-                        "conceptnet": {
+                        "comet_conceptnet": {
                             "minecraft": {
                                 "Causes": [
                                     "enlightenment",
@@ -489,6 +489,9 @@
     ],
     "disliked_skills_batch": [
         []
+    ],
+    "prompts_goals_batch": [
+        {}
     ],
     "clarification_request_flag_batch": [
         false

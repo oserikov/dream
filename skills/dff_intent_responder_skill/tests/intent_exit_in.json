@@ -161,7 +161,7 @@
                         "ner": [
                             []
                         ],
-                        "conceptnet": {},
+                        "comet_conceptnet": {},
                         "entity_linking": [],
                         "sentrewrite": {
                             "clusters": [],
@@ -448,7 +448,7 @@
                             "utt_num": 4,
                             "wiki_skill_entities_info": {}
                         },
-                        "conceptnet": {
+                        "comet_conceptnet": {
                             "bot": {
                                 "SymbolOf": [
                                     "computer",
@@ -546,6 +546,9 @@
     ],
     "disliked_skills_batch": [
         []
+    ],
+    "prompts_goals_batch": [
+        {}
     ],
     "clarification_request_flag_batch": [
         false

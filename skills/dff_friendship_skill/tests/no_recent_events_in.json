@@ -194,7 +194,7 @@
                         ],
                         "entity_detection": {},
                         "entity_linking": [],
-                        "conceptnet": {},
+                        "comet_conceptnet": {},
                         "news_api_annotator": [
                             {
                                 "entity": "all",
@@ -396,7 +396,7 @@
                             ]
                         },
                         "entity_linking": [],
-                        "conceptnet": {},
+                        "comet_conceptnet": {},
                         "midas_predictor": {
                             "comment": 0.051771117166212535,
                             "open_question_opinion": 0.05994550408719346,
@@ -549,6 +549,9 @@
         [
             "emotion_skill"
         ]
+    ],
+    "prompts_goals_batch": [
+        {}
     ],
     "clarification_request_flag_batch": [
         false
